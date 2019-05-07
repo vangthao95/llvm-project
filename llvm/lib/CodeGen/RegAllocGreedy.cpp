@@ -3069,9 +3069,30 @@ void RAGreedy::reportNumberOfSplillsReloads(MachineLoop *L, unsigned &Reloads,
   }
 }
 
+bool OPTSCHED_gPrintSpills;
+extern int NumSpilledRegs;
+extern int gNumSpilledRanges;
+extern int gNumSpills;
+extern int gNumWeightedSpills;
+extern int gNumReloads;
+extern int gNumSpillsNoCleanup;
+extern int gNumReloadsNoCleanup;
+extern bool gPrintSpills;
+extern float gWeightedSpills;
+extern float gWeightedReloads;
+
 bool RAGreedy::runOnMachineFunction(MachineFunction &mf) {
   DEBUG(dbgs() << "********** GREEDY REGISTER ALLOCATION **********\n"
                << "********** Function: " << mf.getName() << '\n');
+
+  NumSpilledRegs = 0;
+  gNumSpills = 0;
+  gNumReloads = 0;
+  gNumSpillsNoCleanup = 0;
+  gNumReloadsNoCleanup = 0;
+  gNumSpilledRanges = 0;
+  gWeightedSpills = 0.0f;
+  gWeightedReloads = 0.0f;
 
   MF = &mf;
   TRI = MF->getSubtarget().getRegisterInfo();
@@ -3124,5 +3145,21 @@ bool RAGreedy::runOnMachineFunction(MachineFunction &mf) {
   reportNumberOfSplillsReloads();
 
   releaseMemory();
+
+	if (OPTSCHED_gPrintSpills) {
+    std::string fxnName = MF->getFunction().getName().str();
+    long SpillCost = gWeightedSpills + gWeightedReloads;
+    long SpillCount = gNumSpills + gNumReloads;
+    long SpillCountNoCleanup = gNumSpillsNoCleanup + gNumReloadsNoCleanup;
+    dbgs() << "\n*************************************\n";
+    dbgs() << "Function: " << fxnName << "\n";
+    dbgs() << "GREEDY RA: Number of spilled live ranges: " << gNumSpilledRanges << "\n";
+    dbgs() << "\nStores: " << gNumSpills << " Reloads: " << gNumReloads << " Spill Count: " << SpillCount;
+    dbgs() << "\nStores without cleanup: " << gNumSpillsNoCleanup << " Reloads without cleanup: " << gNumReloadsNoCleanup << " Spill Count without cleanup: " << SpillCountNoCleanup;
+    dbgs() << "\nStore Cost: " << gWeightedSpills << " Load Cost: " << gWeightedReloads << " Spill Cost: " << SpillCost << "\n";
+    dbgs() << "\n SC in Function "<< fxnName << " " << SpillCost << "\n";
+    dbgs() << "*************************************\n\n";
+  }
+
   return true;
 }
