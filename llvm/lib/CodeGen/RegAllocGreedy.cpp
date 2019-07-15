@@ -3146,20 +3146,18 @@ bool RAGreedy::runOnMachineFunction(MachineFunction &mf) {
 
   releaseMemory();
 
-	if (OPTSCHED_gPrintSpills) {
-    std::string fxnName = MF->getFunction().getName().str();
-    long SpillCost = gWeightedSpills + gWeightedReloads;
-    long SpillCount = gNumSpills + gNumReloads;
-    long SpillCountNoCleanup = gNumSpillsNoCleanup + gNumReloadsNoCleanup;
-    dbgs() << "\n*************************************\n";
-    dbgs() << "Function: " << fxnName << "\n";
-    dbgs() << "GREEDY RA: Number of spilled live ranges: " << gNumSpilledRanges << "\n";
-    dbgs() << "\nStores: " << gNumSpills << " Reloads: " << gNumReloads << " Spill Count: " << SpillCount;
-    dbgs() << "\nStores without cleanup: " << gNumSpillsNoCleanup << " Reloads without cleanup: " << gNumReloadsNoCleanup << " Spill Count without cleanup: " << SpillCountNoCleanup;
-    dbgs() << "\nStore Cost: " << gWeightedSpills << " Load Cost: " << gWeightedReloads << " Spill Cost: " << SpillCost << "\n";
-    dbgs() << "\n SC in Function "<< fxnName << " " << SpillCost << "\n";
-    dbgs() << "*************************************\n\n";
-  }
+  std::string fxnName = MF->getFunction().getName().str();
+  long SpillCost = gWeightedSpills + gWeightedReloads;
+  long SpillCount = gNumSpills + gNumReloads;
+  long SpillCountNoCleanup = gNumSpillsNoCleanup + gNumReloadsNoCleanup;
+  dbgs() << "\n*************************************\n";
+  dbgs() << "Function: " << fxnName << "\n";
+  dbgs() << "GREEDY RA: Number of spilled live ranges: " << gNumSpilledRanges << "\n";
+  dbgs() << "\nStores: " << gNumSpills << " Reloads: " << gNumReloads << " Spill Count: " << SpillCount;
+  dbgs() << "\nStores without cleanup: " << gNumSpillsNoCleanup << " Reloads without cleanup: " << gNumReloadsNoCleanup << " Spill Count without cleanup: " << SpillCountNoCleanup;
+  dbgs() << "\nStore Cost: " << gWeightedSpills << " Load Cost: " << gWeightedReloads << " Spill Cost: " << SpillCost << "\n";
+  dbgs() << "\n SC in Function "<< fxnName << " " << SpillCost << "\n";
+  dbgs() << "*************************************\n\n";
 
   return true;
 }
