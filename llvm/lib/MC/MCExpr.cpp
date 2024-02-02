@@ -704,8 +704,14 @@ static void AttemptToFoldSymbolOffsetDifference(
       }
 
       int64_t Num;
+      unsigned Count;
       if (DF) {
         Displacement += DF->getContents().size();
+      } else if (auto *AF = dyn_cast<MCAlignFragment>(FI);
+                 AF && Layout && AF->hasEmitNops() &&
+                 !Asm->getBackend().shouldInsertExtraNopBytesForCodeAlign(
+                     *AF, Count)) {
+        Displacement += Asm->computeFragmentSize(*Layout, *AF);
       } else if (auto *FF = dyn_cast<MCFillFragment>(FI);
                  FF && FF->getNumValues().evaluateAsAbsolute(Num)) {
         Displacement += Num * FF->getValueSize();
@@ -943,16 +949,17 @@ bool MCExpr::evaluateAsRelocatableImpl(MCValue &Res, const MCAssembler *Asm,
                                                   Addrs, InSet)) {
       // Check if both are Target Expressions, see if we can compare them.
       if (const MCTargetExpr *L = dyn_cast<MCTargetExpr>(ABE->getLHS())) {
-        const MCTargetExpr *R = cast<MCTargetExpr>(ABE->getRHS());
-        switch (ABE->getOpcode()) {
-        case MCBinaryExpr::EQ:
-          Res = MCValue::get(L->isEqualTo(R) ? -1 : 0);
-          return true;
-        case MCBinaryExpr::NE:
-          Res = MCValue::get(L->isEqualTo(R) ? 0 : -1);
-          return true;
-        default:
-          break;
+        if (const MCTargetExpr *R = dyn_cast<MCTargetExpr>(ABE->getRHS())) {
+          switch (ABE->getOpcode()) {
+          case MCBinaryExpr::EQ:
+            Res = MCValue::get(L->isEqualTo(R) ? -1 : 0);
+            return true;
+          case MCBinaryExpr::NE:
+            Res = MCValue::get(L->isEqualTo(R) ? 0 : -1);
+            return true;
+          default:
+            break;
+          }
         }
       }
       return false;

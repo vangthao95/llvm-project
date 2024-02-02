@@ -530,10 +530,8 @@ module std_experimental [system] {
     export *
   }
   module simd {
-    module abi_tag              { private header "experimental/__simd/abi_tag.h" }
     module aligned_tag          { private header "experimental/__simd/aligned_tag.h" }
     module declaration          { private header "experimental/__simd/declaration.h" }
-    module internal_declaration { private header "experimental/__simd/internal_declaration.h" }
     module reference            { private header "experimental/__simd/reference.h" }
     module scalar               { private header "experimental/__simd/scalar.h" }
     module simd                 { private header "experimental/__simd/simd.h" }
@@ -555,11 +553,6 @@ module std_experimental [system] {
   }
   module __config {
     textual header "experimental/__config"
-    export *
-  }
-  // FIXME these should be private
-  module __memory {
-    header "experimental/__memory"
     export *
   }
 }
@@ -616,10 +609,6 @@ module std_private_std_mbstate_t     [system] {
   header "__std_mbstate_t.h"
   export *
 }
-module std_private_threading_support [system] {
-  header "__threading_support"
-  export *
-}
 module std_private_tree              [system] {
   header "__tree"
   export *
@@ -666,6 +655,7 @@ module std_private_algorithm_find_first_of                               [system
 module std_private_algorithm_find_if                                     [system] { header "__algorithm/find_if.h" }
 module std_private_algorithm_find_if_not                                 [system] { header "__algorithm/find_if_not.h" }
 module std_private_algorithm_find_segment_if                             [system] { header "__algorithm/find_segment_if.h" }
+module std_private_algorithm_fold                                        [system] { header "__algorithm/fold.h" }
 module std_private_algorithm_for_each                                    [system] { header "__algorithm/for_each.h" }
 module std_private_algorithm_for_each_n                                  [system] { header "__algorithm/for_each_n.h" }
 module std_private_algorithm_for_each_segment                            [system] { header "__algorithm/for_each_segment.h" }
@@ -1581,6 +1571,7 @@ module std_private_numeric_pstl_transform_reduce    [system] {
   export *
 }
 module std_private_numeric_reduce                   [system] { header "__numeric/reduce.h" }
+module std_private_numeric_saturation_arithmetic    [system] { header "__numeric/saturation_arithmetic.h" }
 module std_private_numeric_transform_exclusive_scan [system] { header "__numeric/transform_exclusive_scan.h" }
 module std_private_numeric_transform_inclusive_scan [system] { header "__numeric/transform_inclusive_scan.h" }
 module std_private_numeric_transform_reduce         [system] { header "__numeric/transform_reduce.h" }
@@ -1773,6 +1764,14 @@ module std_private_thread_jthread              [system] {
   export *
 }
 module std_private_thread_poll_with_backoff    [system] { header "__thread/poll_with_backoff.h" }
+module std_private_thread_support              [system] {
+  header "__thread/support.h"
+  export *
+}
+module std_private_thread_support_c11          [system] { textual header "__thread/support/c11.h" }
+module std_private_thread_support_external     [system] { textual header "__thread/support/external.h" }
+module std_private_thread_support_pthread      [system] { textual header "__thread/support/pthread.h" }
+module std_private_thread_support_windows      [system] { textual header "__thread/support/windows.h" }
 module std_private_thread_this_thread          [system] { header "__thread/this_thread.h" }
 module std_private_thread_thread               [system] {
   header "__thread/thread.h"
@@ -1971,6 +1970,7 @@ module std_private_type_traits_is_trivially_destructible                 [system
 module std_private_type_traits_is_trivially_lexicographically_comparable [system] { header "__type_traits/is_trivially_lexicographically_comparable.h" }
 module std_private_type_traits_is_trivially_move_assignable              [system] { header "__type_traits/is_trivially_move_assignable.h" }
 module std_private_type_traits_is_trivially_move_constructible           [system] { header "__type_traits/is_trivially_move_constructible.h" }
+module std_private_type_traits_is_trivially_relocatable                  [system] { header "__type_traits/is_trivially_relocatable.h" }
 module std_private_type_traits_is_unbounded_array                        [system] { header "__type_traits/is_unbounded_array.h" }
 module std_private_type_traits_is_union                                  [system] { header "__type_traits/is_union.h" }
 module std_private_type_traits_is_unsigned                               [system] { header "__type_traits/is_unsigned.h" }
