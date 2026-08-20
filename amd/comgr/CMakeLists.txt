@@ -205,10 +205,6 @@ if(COMGR_ENABLE_HOTSWAP_TRANSPILE AND NOT COMGR_STATIC_LLVM AND
     "Enable COMGR_STATIC_LLVM or disable LLVM_LINK_LLVM_DYLIB and "
     "CLANG_LINK_CLANG_DYLIB.")
 endif()
-if(COMGR_STATIC_LLVM)
-  set(LLVM_LINK_LLVM_DYLIB OFF)
-  set(CLANG_LINK_CLANG_DYLIB OFF)
-endif()
 
 target_include_directories(amd_comgr
   PRIVATE
@@ -390,6 +386,13 @@ include(DeviceLibs)
 option(COMGR_EMBED_LIBCXX_HEADERS "Embed libc++ headers for HIPRTC" ON)
 if(COMGR_EMBED_LIBCXX_HEADERS)
   include(LibcxxHeaders)
+endif()
+
+# opencl_header calls find_package(Clang), which may reset these linkage
+# variables to Clang's build values. Restore OFF when COMGR_STATIC_LLVM is set.
+if(COMGR_STATIC_LLVM)
+  set(LLVM_LINK_LLVM_DYLIB OFF)
+  set(CLANG_LINK_CLANG_DYLIB OFF)
 endif()
 
 set_target_properties(amd_comgr PROPERTIES
